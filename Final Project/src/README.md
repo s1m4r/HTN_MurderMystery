@@ -1,4 +1,0 @@
-# autoHTN.py
-- Heuristic 1: Tracks items that should only produced once (pickaxes, axes, bench, furnace) and if making them is already in the tasks, they should not be produced again. This is the meat of the heuristics, which prevents cycles. The main problem within the cycle is that it repeatedly tries to reproduce tools using the same tool, so this solves that problem. 
-- Heuristic 2: Ensures that a stone pickaxe will not be used when an iron one exists and so on. Although, this should be solved by the reordering of the methods by time, which I added in later. 
-- Heuristic 3: To shave off a few seconds from the test cases, I banned the production of wooden axes since it actually slowed down the plan by a few seconds in the given cases. This is not a good heuristic, as it benefits these specific cases only, but it got the job done. 
