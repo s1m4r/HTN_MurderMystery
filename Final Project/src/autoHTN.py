@@ -106,12 +106,40 @@ def declare_operators (data):
 def add_heuristic(data, ID):
     
     def heuristic1(state, curr_task, tasks, plan, depth, calling_stack):
-
+        if curr_task[0] == 'have_enough':
+            item = curr_task[2]
+            num_needed = curr_task[3]
+            current_amount = getattr(state, item)[ID]
+            if item == 'Culprit':
+                if num_needed != mystery_elements.culprit:
+                    print(f"Error: Culprit is {mystery_elements.culprit}, not {num_needed}.")
+                    return True
+        
         return False
     
     def heuristic2(state, curr_task, tasks, plan, depth, calling_stack):
+    # Check if current task is a search action
+        print(f"Current task: {curr_task}")
+        if isinstance(curr_task, tuple) and curr_task[0].startswith('have_enough'):
+            print(f"Checking search action: {curr_task[0]}")
+            search_action = curr_task[2]
+            
+            # Extract location from action name (e.g., "safe" from "op_search_safe_for_evidence")
+            location = search_action.split('_')[0]  # Gets 'safe' from 'op_search_safe_for_evidence'
 
-        return False
+            # Check if this location has already been searched
+            searched_state = f"{location}_searched"
+            if hasattr(state, searched_state) and getattr(state, searched_state).get('agent', 0) >= 1:
+                # Location already searched - prune this branch
+                return True  # Return True to indicate this path should be pruned
+
+ 
+        
+        return False  # Don't prune this path
+    
+
+
+        
               
     def heuristic3(state, curr_task, tasks, plan, depth, calling_stack):
 
@@ -157,7 +185,7 @@ if __name__ == '__main__':
 
 	declare_operators(data)
 	declare_methods(data)
-	# add_heuristic(data, 'agent')
+	add_heuristic(data, 'agent')
 
 	pyhop.print_operators()
 	pyhop.print_methods()
@@ -165,7 +193,7 @@ if __name__ == '__main__':
 	# Hint: verbose output can take a long time even if the solution is correct; 
 	# try verbose=1 if it is taking too long
  
-	# pyhop.pyhop(state, goals, verbose=3)
+	pyhop.pyhop(state, goals, verbose=3)
  
 	# pyhop.pyhop(state, [('have_enough', 'agent', 'wood', 12)], verbose=3)
 	# pyhop.pyhop(state, [('have_enough', 'agent', 'cart', 1),('have_enough', 'agent', 'rail', 20)], verbose=3)
