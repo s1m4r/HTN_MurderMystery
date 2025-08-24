@@ -1,0 +1,43 @@
+MYSTERY 
+{'Culprit': 'Taylor',
+ 'Motive': 'blackmail_gone_wrong',
+ 'Murder Weapon': 'knife',
+ 'Victim': 'Belly'}
+
+CHARACTERS + PERSONALITIES 
+{'Belly': 'Naive',
+ 'Conrad': 'Caring',
+ 'Jeremiah': 'Selfish',
+ 'Steven': 'Unserious',
+ 'Taylor': 'Headstrong'}
+
+CHARACTERS + MOTIVES 
+{'Belly': 'manipulated_into_it',
+ 'Conrad': 'temporary_rage',
+ 'Jeremiah': 'covering_up_scandal',
+ 'Steven': 'jealousy_over_friendship',
+ 'Taylor': 'blackmail_gone_wrong'}
+
+LOCATIONS + OBJECTS 
+{'Belly': 'red_herring',
+ 'Conrad': 'red_herring',
+ 'Jeremiah': 'screwdriver',
+ 'Steven': 'evidence',
+ 'Taylor': 'password',
+ 'desk': 'evidence',
+ 'fireplace': 'evidence',
+ 'safe': 'key'}
+
+PLAN 
+[('op_question_Belly_for_red_herring', 'agent'),
+ ('op_question_Taylor_for_password', 'agent'),
+ ('op_unlock_safe_for_search_safe', 'agent'),
+ ('op_search_safe_for_key', 'agent'),
+ ('op_unlock_desk_for_search_desk', 'agent'),
+ ('op_search_desk_for_evidence', 'agent'),
+ ('op_question_Jeremiah_for_screwdriver', 'agent'),
+ ('op_unlock_fireplace_for_search_fireplace', 'agent'),
+ ('op_search_fireplace_for_evidence', 'agent'),
+ ('op_question_Steven_for_evidence', 'agent'),
+ ('op_accuse_Taylor_for_mystery_solved', 'agent')]
+

@@ -96,7 +96,7 @@ Pyhop provides the following classes and functions:
 
 
 from __future__ import print_function
-import copy,sys, pprint
+import copy,sys, pprint, mystery_elements
 
 ############################################################
 # States and goals
@@ -205,6 +205,27 @@ def pyhop(state,tasks,verbose=0):
     if verbose>0: print('** pyhop, verbose={}: **\n   state = {}\n   tasks = {}'.format(verbose, state.__name__, tasks))
     result = seek_plan(state,tasks,[],0,verbose)
     if verbose>0: print('** result =',result,'\n')
+    with open("mystery.txt", "w") as file:
+        file.write("MYSTERY \n")
+        file.write(pprint.pformat(mystery_elements.data["Initial"]))
+        file.write("\n\n")
+        
+        file.write("CHARACTERS + PERSONALITIES \n")
+        file.write(pprint.pformat(mystery_elements.Personalities))
+        file.write("\n\n")
+        
+        file.write("CHARACTERS + MOTIVES \n")
+        file.write(pprint.pformat(mystery_elements.Motives))
+        file.write("\n\n")
+        
+        file.write("LOCATIONS + OBJECTS \n")
+        file.write(pprint.pformat(mystery_elements.World_State))
+        file.write("\n\n")
+        
+        file.write("PLAN \n")
+        file.write(pprint.pformat(result))
+        file.write("\n\n")
+        
     return result
 
 # cm146 modification: add calling stack as parameter

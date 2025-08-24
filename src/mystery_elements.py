@@ -7,62 +7,43 @@ victim = None
 murder_weapon = None
 motive = None
 
+# ------ DEFINE THE CHARACTERS AND THEIR PERSONALITIES ------
+#   You can change the Characters names, but make sure to update it in Personalities and Motives as well
+#   Note: if adding new personality  --> go to randomize_motives() to add possible motives for each new personality
+# ------------------------------------------------------------
+Characters = ["Steven", "Conrad", "Jeremiah", "Taylor", "Belly"]
+Motives = {"Steven": None, "Conrad": None, "Jeremiah": None, "Taylor": None, "Belly": None}
+Personalities = {"Steven": "Unserious", "Conrad": "Caring", "Jeremiah": "Selfish", "Taylor": "Headstrong", "Belly": "Naive"}
+
+# ------ DEFINE THE OBJECTS AND LOCATIONS ------
+#   You can change the Searchable_Locations names, but make sure to update it in Required_Unlocker as well
+#   ALWAYS KEEP 3 EVIDENCE & ONE RED HERRING
+#   make sure number of objects to hide matches the number of characters to question + number of locations to search
+# ------------------------------------------------
+Searchable_Locations = ["desk", "safe", "fireplace"]
+Required_Unlocker = {"desk": "key", "safe": "password", "fireplace": "screwdriver"}
+objects_to_hide = ["key", "password", "screwdriver", "evidence", "evidence", "evidence", "red_herring", "red_herring"]
+
+# -------- POSSIBLE MURDER WEAPONS --------
+#   Add/Remove murder weapons if needed
+# -----------------------------------------
+Murder_Weapons = ["knife", "poison", "golf_cart", "heartbreak", "pushed_down_stairs", "drowning"]
+
+# WORLD STATE KEEPS TRACK OF WHERE EACH OBJECT IS HIDDEN
+World_State = {"Steven": None, "Conrad": None, "Jeremiah": None, "Taylor": None, "Belly": None, "desk": None, "safe": None, "fireplace": None}
+
 data = {
  "Items": [
-   "key",
-   "password",
-   "screwdriver",
    "evidence",
    "red_herring"
  ],
  "States": [
    "mystery_solved",
-   "desk_unlocked",
-   "safe_unlocked",
-   "fireplace_unlocked",
-   "desk_searched",
-   "safe_searched",
-   "fireplace_searched",
-   "steven_questioned",
-   "conrad_questioned",
-   "jeremiah_questioned",
-   "taylor_questioned",
-   "belly_questioned",
    "Culprit",
    "Victim",
    "Motive",
    "Murder Weapon"
  ],
- "Murder Weapons":[
-   "knife",
-   "poison",
-   "golf_cart",
-   "broken_bottle",
-   "pushed_down_stairs",
-   "drowning"
- ],
-  "Characters": {
-   "Steven": {
-    "Motive": None,
-    "Personality": "Unserious"
-   },
-   "Conrad": {
-     "Motive": None,
-     "Personality": "Caring"
-   },
-   "Jeremiah": {
-     "Motive": None,
-     "Personality": "Selfish"
-   },
-   "Taylor": {
-     "Motive": None,
-     "Personality": "Headstrong"
-   },
-   "Belly": {
-     "Motive": None,
-     "Personality": "Naive"
-   }
-  },
  "Initial": {
    "Culprit": culprit,
    "Victim": victim,
@@ -70,194 +51,128 @@ data = {
    "Murder Weapon": murder_weapon
  },
  "Goal": {
+   "red_herring": 1,
   "mystery_solved": 1
  },
  "Recipes": { 
-   # ACCUSE TO SOLVE
-   "accuse Belly for mystery solved": {
-     "Produces": {
-       "mystery_solved": 1
-     },
-     "Requires": {
-       "Culprit": "Belly",
-       "evidence": 3
-     }
-   },
-   "accuse Jeremiah for mystery solved": {
-     "Produces": {
-       "mystery_solved": 1
-     },
-     "Requires": {
-       "Culprit": "Jeremiah",
-       "evidence": 2
-     }
-   },
-   "accuse Conrad for mystery solved": {
-     "Produces": {
-       "mystery_solved": 1
-     },
-     "Requires": {
-       "Culprit": "Conrad",
-       "evidence": 2
-     }
-   },
-   "accuse Steven for mystery solved": {
-     "Produces": {
-       "mystery_solved": 1
-     },
-     "Requires": {
-       "Culprit": "Steven",
-       "evidence": 2
-     }
-   },
-   "accuse Taylor for mystery solved": {
-     "Produces": {
-       "mystery_solved": 1
-     },
-     "Requires": {
-       "Culprit": "Taylor",
-       "evidence": 2
-     }
-   }, # SEARCH FOR EVIDENCE
-   "search desk for evidence": {
-      "Produces": {
-        "evidence": 1,
-        "desk_searched": 1
-        
-      },
-      "Requires": {
-        "desk_unlocked": 1,
-      }
-    },
-   "search safe for evidence": {
-      "Produces": {
-        "evidence": 1,
-        "safe_searched": 1    
-      },
-      "Requires": {
-        "safe_unlocked": 1,
-      }
-    },
-    "search fireplace for evidence": {
-        "Produces": {
-          "evidence": 1,
-          "fireplace_searched": 1
-          
-        },
-        "Requires": {
-          "fireplace_unlocked": 1
-        }
-      }, # QUESTION CHARACTERS
-    "question Steven for evidence": {
-      "Produces": {
-        "password": 1,
-        "steven_questioned": 1
-        
-      },
-      "Requires": {
-        "steven_questioned": 0
-      }
-    },
-    "question Conrad for evidence": {
-      "Produces": {
-        "key": 1,
-        "conrad_questioned": 1
-        
-      },
-      "Requires": {
-         "conrad_questioned": 0
-
-      }
-    },
-    "question Jeremiah for evidence": {
-      "Produces": {
-        "screwdriver": 1,
-        "jeremiah_questioned": 1
-      },
-      "Requires": {
-         "jeremiah_questioned": 0
-      }
-    },
-    "question Taylor for evidence": {
-      "Produces": {
-        "taylor_questioned": 1
-        
-      },
-      "Requires": {
-        "taylor_questioned": 0
-      }
-    },
-    "question Belly for evidence": {
-      "Produces": {
-        "belly_questioned": 1
-        
-      },
-      "Requires": {
-        "belly_questioned": 0
-      }
-    }, # UNLOCK ITEMS
-    "unlock desk for search desk": {
-      "Produces": {
-        "desk_unlocked": 1
-      },
-      "Requires": {
-        "key": 1,
-      },
-      "Consumes": {
-        "key": 1
-      }
-    },
-    "unlock safe for search safe": {
-      "Produces": {
-        "safe_unlocked": 1
-      },
-      "Requires": {
-        "password": 1,
-      },
-      "Consumes": {
-        "password": 1
-      }
-    },
-    "unlock fireplace for search fireplace": {
-      "Produces": {
-        "fireplace_unlocked": 1
-      },
-      "Requires": {
-        "screwdriver": 1
-      },
-      "Consumes": {
-        "screwdriver": 1
-      }
-    }
+    # ACCUSE CHARACTERS
+    # QUESTION CHARACTERS
+    # UNLOCK OBJECTS
+    # SEARCH OBJECTS FOR EVIDENCE
+    
+    # implemented automatucally in functions defined below
  }
 }
 
+def create_search_recipe(location): 
+    data["States"].append(f"{location}_searched")
+    while True:
+      found_item = rand.choice(objects_to_hide)
+      if (found_item != Required_Unlocker[location] or len(objects_to_hide) == 1):
+        break
+
+    objects_to_hide.remove(found_item)
+    World_State[location] = found_item
+    return [{
+        "Produces": {
+            found_item: 1,
+            f"{location}_searched": 1
+        },
+        "Requires": {
+            f"{location}_unlocked": 1
+        }
+    }, found_item]
+
+def update_search_recipes():
+    for location in Searchable_Locations:
+        recipe = create_search_recipe(location)
+        recipe_name = f"search {location} for {recipe[1]}"
+        data["Recipes"][recipe_name] = recipe[0]
+
+def create_unlock_recipe(location):
+    data["States"].append(f"{location}_unlocked")
+    
+    required_item = Required_Unlocker[location]
+    data["Items"].append(required_item)
+    
+    return {
+        "Produces": {
+            f"{location}_unlocked": 1
+        },
+        "Requires": {
+            required_item: 1
+        },
+        "Consumes": {
+            required_item: 1
+        }
+    }
+
+def update_unlock_recipes():
+    for location in Searchable_Locations:
+        recipe_name = f"unlock {location} for search {location}"
+        data["Recipes"][recipe_name] = create_unlock_recipe(location)
+
+def create_question_recipe(character):
+    data["States"].append(f"{character.lower()}_questioned")
+    found_item = rand.choice(objects_to_hide)
+    objects_to_hide.remove(found_item)
+    World_State[character] = found_item
+    return [{
+        "Produces": {
+            found_item: 1,
+            f"{character.lower()}_questioned": 1
+        },
+        "Requires": {
+            f"{character.lower()}_questioned": 0
+        }
+    }, found_item]
+
+def update_question_recipes():
+    for character in Characters:
+      if character != victim:
+        recipe = create_question_recipe(character)
+        recipe_name = f"question {character} for {recipe[1]}"
+        data["Recipes"][recipe_name] = recipe[0]
+
+def create_accuse_recipe(character):
+    return {
+        "Produces": {
+            "mystery_solved": 1
+        },
+        "Requires": {
+            "Culprit": character,
+            "evidence": 3
+        }
+    }
+
+def update_accuse_recipes():
+    for character in Characters:
+      if character != victim:
+        recipe_name = f"accuse {character} for mystery solved"
+        data["Recipes"][recipe_name] = create_accuse_recipe(character)
+
 def randomize_motives():
     motives = {
-        "Steven": ["accidental_prank_gone_wrong", "drunken_mistake", "jealousy_over_friendship", "protecting_another_secret"],
-        "Conrad": ["protecting_someone", "mercy_killing", "guilt_over_past_action", "temporary_rage"],
-        "Jeremiah": ["inheritance_money", "status_power", "jealousy_in_relationship", "covering_up_scandal"],
-        "Taylor": ["revenge_for_betrayal", "defending_reputation", "extreme_competitiveness", "blackmail_gone_wrong"],
-        "Belly": ["manipulated_into_it", "mistaken_identity", "false_confession", "unrequited_love_turned_deadly"]
+        "Unserious": ["accidental_prank_gone_wrong", "drunken_mistake", "jealousy_over_friendship", "protecting_another_secret"],
+        "Caring": ["protecting_someone", "mercy_killing", "guilt_over_past_action", "temporary_rage"],
+        "Selfish": ["inheritance_money", "status_power", "jealousy_in_relationship", "covering_up_scandal"],
+        "Headstrong": ["revenge_for_betrayal", "defending_reputation", "extreme_competitiveness", "blackmail_gone_wrong"],
+        "Naive": ["manipulated_into_it", "mistaken_identity", "false_confession", "unrequited_love_turned_deadly"]
     }
     
-    for character in data["Characters"]:
-        if character in motives:
-            data["Characters"][character]["Motive"] = rand.choice(motives[character])
+    for character in Characters:
+        possible_motives = motives[Personalities[character]]
+        Motives[character] = rand.choice(possible_motives)
     
     global culprit, motive
-    if culprit in data["Characters"]:
-        motive = data["Characters"][culprit]["Motive"]
-        data["Initial"]["Motive"] = motive
-
-
+    motive = Motives[culprit]
+    data["Initial"]["Motive"] = motive
 
 def randomize():
     global culprit, victim, murder_weapon, motive
-    characters = list(data["Characters"].keys())
-    culprit = rand.choice(characters)
-    victim = rand.choice([c for c in characters if c != culprit])    
-    murder_weapon = rand.choice(data["Murder Weapons"])
+    culprit = rand.choice(Characters)
+    victim = rand.choice([c for c in Characters if c != culprit])    
+    murder_weapon = rand.choice(Murder_Weapons)
     
     data["Initial"].update({
         "Culprit": culprit,
@@ -265,21 +180,20 @@ def randomize():
         "Murder Weapon": murder_weapon
     })
     
-    data["Recipes"].pop(f"question {victim} for evidence")
-    data["Recipes"].pop(f"accuse {victim} for mystery solved")
+    # data["Recipes"].pop(f"question {victim} for evidence")
+    # data["Recipes"].pop(f"accuse {victim} for mystery solved")
     
     randomize_motives()
+    
 
 def print_mystery():
     print("Current Mystery:")
     print(data["Initial"])
-    # print(f"Victim: {data['Initial']['Victim']}")
-    # print(f"Murder Weapon: {data['Initial']['Murder Weapon']}")
-    # possible_culprits = list(data['Characters'].keys())
-    # possible_culprits.remove(victim)
-    # print(f"Possible Culprits: {possible_culprits} ({culprit})")
-    # print(f"Required Evidence: {2 if data['Initial']['Culprit'] != 'Belly' else 3}")
 
 def get_data():
+    update_accuse_recipes()
+    update_question_recipes()
+    update_unlock_recipes()
+    update_search_recipes()
     randomize()
     return data

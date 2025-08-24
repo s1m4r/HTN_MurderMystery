@@ -1,6 +1,7 @@
 import pyhop
 import json
 import mystery_elements
+import random as rand
 
 def check_enough (state, ID, item, num):
 	if getattr(state,item)[ID] >= num: return []
@@ -56,6 +57,8 @@ def declare_methods (data):
 		new_method = make_method(action, rules)
 		new_method.__name__ = action.replace(' ', '_')
 		methods[product_name].append((action, new_method)) # i.e. ('produce_wood' :('punch_for_wood', method), ('axe_for_wood', method)))
+		# shuffle methods for randomness in mystery
+		rand.shuffle(methods[product_name])
 	
 	for item_name, method_list in methods.items(): # i.e. item_name = 'produce_wood', method_list = [('punch_for_wood', method), ('axe_for_wood', method)]
 	# 	if len(method_list) > 1:
@@ -106,6 +109,9 @@ def declare_operators (data):
 def add_heuristic(data, ID):
     
     def heuristic1(state, curr_task, tasks, plan, depth, calling_stack):
+    # --------------------------------------
+    # ONLY PLAN TO QUESTION CORRECT SUSPECT
+    # --------------------------------------
         if curr_task[0] == 'have_enough':
             item = curr_task[2]
             num_needed = curr_task[3]
@@ -118,7 +124,9 @@ def add_heuristic(data, ID):
         return False
     
     def heuristic2(state, curr_task, tasks, plan, depth, calling_stack):
-    # Check if current task is a search action
+    # ---------------------------
+    # CANT SEARCH SAME PLACE TWICE
+    # ---------------------------
         print(f"Current task: {curr_task}")
         if isinstance(curr_task, tuple) and curr_task[0].startswith('have_enough'):
             print(f"Checking search action: {curr_task[0]}")
@@ -132,17 +140,26 @@ def add_heuristic(data, ID):
             if hasattr(state, searched_state) and getattr(state, searched_state).get('agent', 0) >= 1:
                 # Location already searched - prune this branch
                 return True  # Return True to indicate this path should be pruned
-
- 
-        
-        return False  # Don't prune this path
-    
-
-
-        
+        return False  # Don't prune this path    
               
     def heuristic3(state, curr_task, tasks, plan, depth, calling_stack):
-
+    # -------------------------------
+    # CANT QUESTION SAME PERSON TWICE
+    # -------------------------------
+        print(f"Current task: {curr_task}")
+        if isinstance(curr_task, tuple) and curr_task[0].startswith('have_enough'):
+            print(f"Checking question action: {curr_task[0]}")
+            question_action = curr_task[2]
+            
+            if not question_action.endswith('_questioned'):
+                return False
+            
+            # Extract character from action name (e.g., "Belly" from "Belly_questioned")
+            character = question_action.split('_')[0]
+            questioned_state = f"{character}_questioned"
+            if hasattr(state, questioned_state) and getattr(state, questioned_state).get('agent', 0) >= 1:
+                # Character already questioned - prune this branch
+                return True
         return False
 
 
@@ -172,11 +189,6 @@ def set_up_goals (data, ID):
 	return goals
 
 if __name__ == '__main__':
-	# rules_filename = 'crafting.json'
-
-	# with open(rules_filename) as f:
-	# 	data = json.load(f)
-
 	data = mystery_elements.get_data()
 	mystery_elements.print_mystery()
 
@@ -187,13 +199,11 @@ if __name__ == '__main__':
 	declare_methods(data)
 	add_heuristic(data, 'agent')
 
-	pyhop.print_operators()
-	pyhop.print_methods()
+	# pyhop.print_operators()
+	# pyhop.print_methods()
 
 	# Hint: verbose output can take a long time even if the solution is correct; 
 	# try verbose=1 if it is taking too long
  
 	pyhop.pyhop(state, goals, verbose=3)
  
-	# pyhop.pyhop(state, [('have_enough', 'agent', 'wood', 12)], verbose=3)
-	# pyhop.pyhop(state, [('have_enough', 'agent', 'cart', 1),('have_enough', 'agent', 'rail', 20)], verbose=3)
